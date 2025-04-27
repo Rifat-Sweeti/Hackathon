@@ -12,10 +12,22 @@ const Dashboard = () => {
     if (!token) {
       navigate('/login'); // Redirect to login if not logged in
     } else {
-      // Call an API to fetch user data here (assuming you have an endpoint for that)
-      setUserInfo({ name: 'John Doe', email: 'john@example.com' });
+      // Fetch user data from localStorage (or an API if applicable)
+      const storedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+      if (storedUserInfo) {
+        setUserInfo(storedUserInfo);
+      } else {
+        // If no user data found in localStorage, you can either fetch from an API or handle this scenario accordingly
+        setUserInfo({ name: 'John Doe', email: 'john@example.com' });
+      }
     }
   }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userInfo'); // Remove user info from localStorage
+    navigate('/login'); // Redirect to login page after logout
+  };
 
   return (
     <div>
@@ -24,7 +36,7 @@ const Dashboard = () => {
         <div>
           <p>Welcome, {userInfo.name}</p>
           <p>Email: {userInfo.email}</p>
-          <button onClick={() => localStorage.removeItem('token')}>Logout</button>
+          <button onClick={handleLogout}>Logout</button>
         </div>
       ) : (
         <p>Loading...</p>
